@@ -16,7 +16,7 @@ class InternlmMinerProcessor:
         self.model = AutoModelForCausalLM.from_pretrained("internlm/internlm-chat-7b-8k", trust_remote_code=True)
         self.pipeline = pipeline(
             "text-generation", self.model, tokenizer=self.tokenizer,
-            device=device, max_new_tokens=255, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
+            device=device, max_new_tokens=147, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
         )
 
     def promptToMessages(self, prompt):
