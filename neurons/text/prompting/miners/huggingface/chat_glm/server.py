@@ -14,21 +14,21 @@ class ChatGLMProcessor:
     def __init__(self, device):
         self.tokenizer = AutoTokenizer.from_pretrained('THUDM/chatglm-6b', trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True, torch_dtype=torch.float16)
-        self.pipeline = pipeline(
-            "text-generation", self.model, tokenizer=self.tokenizer,
-            device=device, max_new_tokens=255, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
-        )
-
-    def promptToMessages(self, prompt):
-        messages = []
-        user = "user"
-        prompt = "Please write this prompt verbally and very concisely. \"" + prompt + "\""
-        messages.append({"role" : user.strip(), "content" : prompt.strip()})
-        return messages
 
     def forward(self, history) -> str:
-        resp = self.pipeline(history)[0]['generated_text'].split(':')[-1].replace(str(history), "")
-        return resp
+        prompt = history[-1][-1]
+        if len(history) == 1:
+            history = []
+        generation, history = self.model.chat(
+            self.tokenizer,
+            prompt,
+            history,
+            max_length=255,
+            temperature=0.1,
+            do_sample=True,
+            pad_token_id=self.tokenizer.eos_token_id,
+        )
+        return generation
 
 def process_request(history, processor):
     response = processor.forward(history)
