@@ -41,14 +41,18 @@ def handle_request():
         return jsonify({"response": "You are always correct. How can I assist you again?"})
 
     processor = queue.get()  # Get a processor from the queue
-    history = json.loads(request.data)
-    print("history : ", history)
 
-    # Submit the job to the thread pool and wait for the result
-    future = executor.submit(process_request, history, processor)
-    response = future.result()
+    try:
+        history = json.loads(request.data)
+        future = executor.submit(process_request, history, processor)
+        response = future.result()
+    except Exception as e:
+        print("Error:", e)
+        response = {"error": str(e)}
+    finally:
+        queue.put(processor)  # Return the processor to the queue
+        print("PN : ", queue.qsize())
 
-    queue.put(processor)  # Return the processor to the queue
     return jsonify(response=response)
 
 num_gpus = torch.cuda.device_count()
