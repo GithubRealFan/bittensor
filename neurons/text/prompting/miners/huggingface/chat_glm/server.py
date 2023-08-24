@@ -12,8 +12,9 @@ app = Flask(__name__)
 class ChatGLMProcessor:
 
     def __init__(self, device):
-        self.tokenizer = AutoTokenizer.from_pretrained('THUDM/chatglm-6b', trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained("THUDM/chatglm-6b", trust_remote_code=True, torch_dtype=torch.float16)
+        self.device = device
 
     def forward(self, history) -> str:
         prompt = history[-1][-1]
@@ -24,6 +25,7 @@ class ChatGLMProcessor:
             prompt,
             history,
             max_length=255,
+            device = self.device,
             temperature=0.1,
             do_sample=True,
             pad_token_id=self.tokenizer.eos_token_id,
