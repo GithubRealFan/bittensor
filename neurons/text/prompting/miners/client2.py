@@ -68,7 +68,8 @@ class ClientMiner(bittensor.BasePromptingMiner):
                 self.server = 1 - self.server
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
-                    time.sleep(1)
+                    if _ < 5:
+                        time.sleep(1)
                     continue
                 return resp
             return self.openaiChat(history)
