@@ -55,12 +55,13 @@ class ClientMiner(bittensor.BasePromptingMiner):
     def forward(self, messages: List[Dict[str, str]]) -> str:
         history = self.process_history( messages )
         try : 
-            for _ in range(10):
+            for _ in range(6):
                 response = requests.post('http://' + self.config.server.ip + '/process', data=json.dumps(history))
                 resp = response.json()['response']
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
-                    time.sleep(0.5)
+                    if _ < 5:
+                        time.sleep(0.3)
                     continue
                 return resp
             return self.openaiChat(history)
