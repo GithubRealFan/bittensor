@@ -42,7 +42,7 @@ class ClientMiner(bittensor.BasePromptingMiner):
     def __init__(self):
         super(ClientMiner, self).__init__()
         openai.api_key = self.config.api_key
-        
+
     def promptToMessages(self, prompt):
         messages = []
         user = "user"
@@ -71,8 +71,12 @@ class ClientMiner(bittensor.BasePromptingMiner):
                         time.sleep(0.3)
                     continue
                 return resp
+            if self.config.api_key == '' :
+                return "Hello!"
             return self.openaiChat(history)
         except requests.exceptions.RequestException as e:
+            if self.config.api_key == '' :
+                return "Hello!"
             return self.openaiChat(history)
 
     def backward(
