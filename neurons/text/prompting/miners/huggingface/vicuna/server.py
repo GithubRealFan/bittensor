@@ -30,7 +30,7 @@ class VicunaProcessor:
         self.device_string = 'cuda:{}'.format(device)
         self.tokenizer = AutoTokenizer.from_pretrained('AlekseyKorshuk/vicuna-7b', use_fast=False)
         self.stop = StopOnTokens(self.tokenizer.convert_tokens_to_ids([""]))
-        self.model = GPTNeoXForCausalLM.from_pretrained('AlekseyKorshuk/vicuna-7b', torch_dtype=torch.float32, low_cpu_mem_usage=True,)
+        self.model = GPTNeoXForCausalLM.from_pretrained('AlekseyKorshuk/vicuna-7b', torch_dtype=torch.bfloat16)
         self.model.to(self.device_string)
 
     def forward(self, history) -> str:
