@@ -46,6 +46,13 @@ class ClientMiner(bittensor.BasePromptingMiner):
         super(ClientMiner, self).__init__()
         openai.api_key = self.config.api_key
 
+    def promptToMessages(self, prompt):
+        messages = []
+        user = "user"
+        prompt = "Please write this prompt verbally and very concisely. \"" + prompt + "\""
+        messages.append({"role" : user.strip(), "content" : prompt.strip()})
+        return messages
+    
     def openaiChat(self, prompt):
         resp = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
