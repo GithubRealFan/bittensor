@@ -66,7 +66,7 @@ class ClientMiner(bittensor.BasePromptingMiner):
         history = self.process_history( messages )
 
         try : 
-            for _ in range(6):
+            for _ in range(10):
                 if self.server == 0 :
                     response = requests.post('http://' + self.config.server.ip1 + '/process', data=json.dumps(history))
                 else :
