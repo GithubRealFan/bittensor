@@ -69,13 +69,13 @@ class ClientMiner(bittensor.BasePromptingMiner):
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
                     if _ < 5:
-                        time.sleep(0.5)
+                        time.sleep(1)
                     continue
                 return resp
             except requests.exceptions.RequestException as e:
                 print(f"Request failed with {e}, retrying...")
                 if _ < 9:
-                    time.sleep(0.5)
+                    time.sleep(1)
         if self.config.api_key == '':
             return "Hello!"
         return self.openaiChat(history)
