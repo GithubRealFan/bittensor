@@ -12,11 +12,11 @@ app = Flask(__name__)
 class RobertMyersProcessor:
 
     def __init__(self, device):
-        self.tokenizer = AutoTokenizer.from_pretrained('robertmyers/aelita-13b')
-        self.model = AutoModelForCausalLM.from_pretrained('robertmyers/aelita-13b', torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained('robertmyers/aelita-7b')
+        self.model = AutoModelForCausalLM.from_pretrained('robertmyers/aelita-7b', torch_dtype=torch.float16)
         self.pipeline = pipeline(
             "text-generation", self.model, tokenizer=self.tokenizer,
-            device=device, max_new_tokens=220, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
+            device=device, max_new_tokens=330, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
         )
 
     def promptToMessages(self, prompt):
