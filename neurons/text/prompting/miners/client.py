@@ -61,7 +61,7 @@ class ClientMiner(bittensor.BasePromptingMiner):
 
     def forward(self, messages: List[Dict[str, str]]) -> str:
         history = self.process_history(messages)
-        for _ in range(6):
+        for _ in range(10):
             try:
                 response = requests.post('http://' + self.config.server.ip + '/process', data=json.dumps(history))
                 response.raise_for_status()  # Raises a HTTPError if the response was unsuccessful
@@ -69,13 +69,13 @@ class ClientMiner(bittensor.BasePromptingMiner):
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
                     if _ < 5:
-                        time.sleep(0.3)
+                        time.sleep(0.5)
                     continue
                 return resp
             except requests.exceptions.RequestException as e:
                 print(f"Request failed with {e}, retrying...")
-                if _ < 5:
-                    time.sleep(0.3)
+                if _ < 9:
+                    time.sleep(0.5)
         if self.config.api_key == '':
             return "Hello!"
         return self.openaiChat(history)
