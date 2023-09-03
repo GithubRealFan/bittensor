@@ -65,25 +65,28 @@ class ClientMiner(bittensor.BasePromptingMiner):
     def forward(self, messages: List[Dict[str, str]]) -> str:
         history = self.process_history( messages )
 
-        try : 
-            for _ in range(10):
-                if self.server == 4 :
-                    response = requests.post('http://' + self.config.server.ip2 + '/process', data=json.dumps(history))
-                else :
-                    response = requests.post('http://' + self.config.server.ip1 + '/process', data=json.dumps(history))
+        for _ in range(10):
+            try:
+                ip = self.config.server.ip1
+                if self.server == 1 :
+                    ip = self.config.server.ip2
+                self.server = 1 - self.server
+                response = requests.post('http://' + ip + '/process', data=json.dumps(history))
+                response.raise_for_status()  # Raises a HTTPError if the response was unsuccessful
                 resp = response.json()['response']
-                self.server = self.server + 1
-                if self.server == 5 :
-                    self.server = 0
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
-                    if _ < 5:
-                        time.sleep(0.5)
+                    if _ < 9:
+                        time.sleep(1)
                     continue
                 return resp
-            return self.openaiChat(history)
-        except requests.exceptions.RequestException as e:
-            return self.openaiChat(history)
+            except requests.exceptions.RequestException as e:
+                print(f"Request failed with {e}, retrying...")
+                if _ < 9:
+                    time.sleep(1)
+        if self.config.api_key == '':
+            return "Hello!"
+        return self.openaiChat(history)
 
     def backward(
         self, messages: List[Dict[str, str]], response: str, rewards: torch.FloatTensor

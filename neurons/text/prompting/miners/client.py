@@ -68,7 +68,7 @@ class ClientMiner(bittensor.BasePromptingMiner):
                 resp = response.json()['response']
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
-                    if _ < 5:
+                    if _ < 9:
                         time.sleep(1)
                     continue
                 return resp
