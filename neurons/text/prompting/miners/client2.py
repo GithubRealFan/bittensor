@@ -67,12 +67,14 @@ class ClientMiner(bittensor.BasePromptingMiner):
 
         try : 
             for _ in range(10):
-                if self.server == 0 :
-                    response = requests.post('http://' + self.config.server.ip1 + '/process', data=json.dumps(history))
-                else :
+                if self.server == 4 :
                     response = requests.post('http://' + self.config.server.ip2 + '/process', data=json.dumps(history))
+                else :
+                    response = requests.post('http://' + self.config.server.ip1 + '/process', data=json.dumps(history))
                 resp = response.json()['response']
-                self.server = 1 - self.server
+                self.server = self.server + 1
+                if self.server == 5 :
+                    self.server = 0
                 ln = len(resp)
                 if ln == 51 or ln <= 10:
                     if _ < 5:
