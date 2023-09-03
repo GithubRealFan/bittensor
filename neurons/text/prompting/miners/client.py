@@ -61,24 +61,13 @@ class ClientMiner(bittensor.BasePromptingMiner):
 
     def forward(self, messages: List[Dict[str, str]]) -> str:
         history = self.process_history( messages )
-        try : 
-            for _ in range(10):
+        for _ in range(5):
+            try:
                 response = requests.post('http://' + self.config.server.ip + '/process', data=json.dumps(history))
-                resp = response.json()['response']
-                ln = len(resp)
-                if ln == 51 or ln <= 10:
-                    if _ < 5:
-                        time.sleep(0.5)
-                    continue
-                return resp
-            if self.config.api_key == '' :
-                return "Hello!"
-            return self.openaiChat(history)
-        except requests.exceptions.RequestException as e:
-            if self.config.api_key == '' :
-                return "Hello!"
-            return self.openaiChat(history)
-
+                return response
+            except requests.exceptions.RequestException as e:
+                time.sleep(2)
+        return "Hello!"
     def backward(
         self, messages: List[Dict[str, str]], response: str, rewards: torch.FloatTensor
     ) -> str:
