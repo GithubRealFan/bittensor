@@ -16,7 +16,7 @@ class RobertMyersProcessor:
         self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16)
         self.pipeline = pipeline(
             "text-generation", self.model, tokenizer=self.tokenizer,
-            device=device, max_new_tokens=270, temperature=0.07, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
+            device=device, max_new_tokens=300, temperature=0.12, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
         )
 
     def promptToMessages(self, prompt):
