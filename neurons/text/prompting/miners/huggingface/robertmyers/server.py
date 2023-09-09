@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from typing import List, Dict
 
 app = Flask(__name__)
-model_path = '/root/targon'
+model_path = 'robertmyers/targon-7b'
 class RobertMyersProcessor:
 
     def __init__(self, device):
@@ -67,7 +67,7 @@ for processor in processors:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run RobertMyers server.')
     parser.add_argument('--port', type=int, default=2023, help='Port number to run the server on.')  
-    parser.add_argument('--model', type=str, default='/root/targon', help='Model path.')  
+    parser.add_argument('--model', type=str, default='robertmyers/targon-7b', help='Model path.')  
     args = parser.parse_args()  # Parse the arguments
     model_path = args.model
     app.run(host='0.0.0.0', port=args.port)
