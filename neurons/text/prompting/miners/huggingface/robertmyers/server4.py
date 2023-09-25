@@ -8,15 +8,15 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from typing import List, Dict
 
 app = Flask(__name__)
-
+model_path = '.cache/huggingface/hub/models--robertmyers--targon-7b/snapshots/6c8b72ed5ccb0b87ef6bf78825b6cb76f97fc486'
 class RobertMyersProcessor:
 
     def __init__(self, device):
-        self.tokenizer = AutoTokenizer.from_pretrained('robertmyers/aelita-13b')
-        self.model = AutoModelForCausalLM.from_pretrained('robertmyers/aelita-13b', torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16)
         self.pipeline = pipeline(
             "text-generation", self.model, tokenizer=self.tokenizer,
-            device=device, max_new_tokens=270, temperature=0.1, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
+            device=device, max_new_tokens=299, temperature=0.147, do_sample=True, pad_token_id=self.tokenizer.eos_token_id
         )
 
     def promptToMessages(self, prompt):
@@ -67,5 +67,7 @@ for processor in processors:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run RobertMyers server.')
     parser.add_argument('--port', type=int, default=2023, help='Port number to run the server on.')  
+    parser.add_argument('--model', type=str, default='robertmyers/targon-7b', help='Model path.')  
     args = parser.parse_args()  # Parse the arguments
+    model_path = args.model
     app.run(host='0.0.0.0', port=args.port)
